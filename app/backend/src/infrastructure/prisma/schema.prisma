@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  customer_id String  @id @default(uuid())
+  name        String
+  email       String  @unique
+  orders      Order[]
+}
+
+model Product {
+  product_id  String        @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  image_url   String
+  details     OrderDetail[]
+}
+
+model Order {
+  order_id     String        @id @default(uuid())
+  customer_id  String
+  created_at   DateTime      @default(now())
+  customer     Customer      @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  details      OrderDetail[]
+  transactions Transaction[]
+}
+
+model OrderDetail {
+  details_id String  @id @default(uuid())
+  order_id   String
+  product_id String
+  quantity   Int
+  subtotal   Float
+  order      Order   @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+  product    Product @relation(fields: [product_id], references: [product_id], onDelete: Cascade)
+}
+
+model Transaction {
+  transaction_id       String            @id @default(uuid())
+  order_id             String
+  total                Float
+  taxes                Float
+  shipping_cost        Float
+  status               TransactionStatus
+  wompi_transaction_id String            @unique
+  payments             Payment[]
+  order                Order             @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+}
+
+model Payment {
+  payment_id       String         @id @default(uuid())
+  transaction_id   String
+  card_type        CardType
+  last_four_digits String
+  payment_status   PaymentStatus?
+  transaction      Transaction    @relation(fields: [transaction_id], references: [transaction_id], onDelete: Cascade)
+}
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  FAILED
+}
+
+enum CardType {
+  Visa
+  MasterCard
+  Amex
+  Discover
+}
+
+enum PaymentStatus {
+  APPROVED
+  REJECTED
+}
