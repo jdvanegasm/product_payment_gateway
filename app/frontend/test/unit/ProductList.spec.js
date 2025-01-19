@@ -8,7 +8,7 @@ jest.mock('vue-router', () => ({
     replace: jest.fn(),
     go: jest.fn(),
     back: jest.fn(),
-    history: createWebHistory(), // O puedes cambiar a createWebHashHistory() o createMemoryHistory() dependiendo de lo que necesites.
+    history: createWebHistory(),
   }),
   createWebHistory: jest.fn(),
   createWebHashHistory: jest.fn(),
