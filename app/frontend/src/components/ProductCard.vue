@@ -47,6 +47,9 @@ export default {
         query: {
           productName: this.name,
           productPrice: this.price,
+          productStock: this.stock,
+          productImage: this.image,
+          productDescription: this.description,
         },
       });
     },
