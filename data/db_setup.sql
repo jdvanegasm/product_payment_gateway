@@ -30,6 +30,7 @@ create table transactions (
     product_id uuid not null,
     customer_name varchar(255) not null,
     customer_email varchar(255) not null,
+    delivery_address varchar(255) not null,
     quantity int not null,
     total float not null,
     taxes float not null,
