@@ -4,8 +4,14 @@ import cart from './modules/cart';
 
 const store = createStore({
   modules: {
-    products,
-    cart,
+    products: {
+      ...products,
+      namespaced: true,
+    },
+    cart: {
+      ...cart,
+      namespaced: true,
+    },
   },
 });
 

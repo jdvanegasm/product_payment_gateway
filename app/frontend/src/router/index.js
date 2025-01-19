@@ -4,22 +4,22 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../pages/ProductList.vue'),
+    component: () => import('@/pages/ProductList.vue'),
   },
   {
     path: '/checkout',
     name: 'CheckoutPage',
-    component: () => import('../pages/CheckoutPage.vue'),
+    component: () => import('@/pages/CheckoutPage.vue'),
   },
   {
     path: '/summary',
     name: 'Summary',
-    component: () => import('../pages/PaymentSummary.vue'),
+    component: () => import('@/pages/PaymentSummary.vue'),
   },
   {
     path: '/result',
     name: 'Result',
-    component: () => import('../pages/TransactionResult.vue'),
+    component: () => import('@/pages/TransactionResult.vue'),
   },
 ];
 
