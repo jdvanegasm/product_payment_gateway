@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, IsEnum, Length } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsEnum, Length, IsOptional } from 'class-validator';
 import { TransactionStatus, CardType, PaymentStatus } from '@prisma/client';
 
 export class CreateTransactionDTO {
@@ -38,9 +38,9 @@ export class CreateTransactionDTO {
   @IsEnum(TransactionStatus)
   status: TransactionStatus;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  wompiTransactionId: string;
+  wompiTransactionId?: string;
 
   @IsNotEmpty()
   @IsEnum(CardType)
@@ -54,4 +54,20 @@ export class CreateTransactionDTO {
   @IsNotEmpty()
   @IsEnum(PaymentStatus)
   paymentStatus: PaymentStatus;
+
+  @IsOptional()
+  @IsString()
+  cardNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  cardExpirationMonth?: string;
+
+  @IsOptional()
+  @IsString()
+  cardExpirationYear?: string;
+
+  @IsOptional()
+  @IsString()
+  cardCvc?: string;
 }

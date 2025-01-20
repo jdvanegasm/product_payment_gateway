@@ -5,12 +5,14 @@ import { TransactionRepository } from '../../domain/repositories/transaction-rep
 import { CreateTransactionDTO } from '../dtos/create-transaction-dto';
 import { TransactionStatus, CardType, PaymentStatus } from '@prisma/client';
 import { PRODUCT_REPOSITORY } from '../../domain/repositories/product-repository.token';
-import { TRANSACTION_REPOSITORY } from '../../domain/repositories/transaction-repository.token'
+import { TRANSACTION_REPOSITORY } from '../../domain/repositories/transaction-repository.token';
+import { WompiPort } from '../../application/ports/wompi.ports';
 
 describe('CreateTransactionUseCase', () => {
   let useCase: CreateTransactionUseCase;
   let productRepositoryMock: jest.Mocked<ProductRepository>;
   let transactionRepositoryMock: jest.Mocked<TransactionRepository>;
+  let wompiPortMock: jest.Mocked<WompiPort>;
 
   beforeEach(async () => {
     productRepositoryMock = {
@@ -25,18 +27,24 @@ describe('CreateTransactionUseCase', () => {
       getTransactionById: jest.fn(),
     };
 
+    wompiPortMock = {
+      createTransaction: jest.fn(),
+      getTransactionStatus: jest.fn(),
+    };
+
     const moduleRef = await Test.createTestingModule({
       providers: [
         CreateTransactionUseCase,
         { provide: PRODUCT_REPOSITORY, useValue: productRepositoryMock },
         { provide: TRANSACTION_REPOSITORY, useValue: transactionRepositoryMock },
+        { provide: 'WOMPI_PORT', useValue: wompiPortMock },
       ],
     }).compile();
 
     useCase = moduleRef.get<CreateTransactionUseCase>(CreateTransactionUseCase);
   });
 
-  it('should create a transaction and update stock', async () => {
+  it('should create a transaction with an existing Wompi transaction ID and update stock', async () => {
     const mockProduct = {
       product_id: '1',
       name: 'Test Product',
@@ -90,6 +98,81 @@ describe('CreateTransactionUseCase', () => {
     expect(transactionRepositoryMock.createTransaction).toHaveBeenCalledWith(expect.objectContaining({
       product_id: '1',
       customer_name: 'John Doe',
+    }));
+  });
+
+  it('should create a transaction by generating a Wompi transaction ID and update stock', async () => {
+    const mockProduct = {
+      product_id: '1',
+      name: 'Test Product',
+      description: 'Desc',
+      price: 100,
+      stock: 10,
+      image_url: 'url',
+    };
+
+    const mockTransaction = {
+      transaction_id: '1',
+      product_id: '1',
+      customer_name: 'John Doe',
+      customer_email: 'johndoe@example.com',
+      delivery_address: '123 Test St',
+      quantity: 2,
+      total: 200,
+      taxes: 38,
+      shipping_cost: 10,
+      status: 'PENDING' as TransactionStatus,
+      wompi_transaction_id: 'generated-wompi-id',
+      card_type: 'Visa' as CardType,
+      last_four_digits: '1234',
+      payment_status: 'PENDING' as PaymentStatus,
+    };
+
+    const mockWompiTransaction = { id: 'generated-wompi-id' };
+
+    productRepositoryMock.findById.mockResolvedValue(mockProduct);
+    transactionRepositoryMock.createTransaction.mockResolvedValue(mockTransaction);
+    wompiPortMock.createTransaction.mockResolvedValue(mockWompiTransaction);
+
+    const input: CreateTransactionDTO = {
+      productId: '1',
+      customerName: 'John Doe',
+      customerEmail: 'johndoe@example.com',
+      deliveryAddress: '123 Test St',
+      quantity: 2,
+      total: 200,
+      taxes: 38,
+      shippingCost: 10,
+      status: 'PENDING',
+      cardType: 'Visa',
+      lastFourDigits: '1234',
+      paymentStatus: 'PENDING',
+      cardNumber: '4242424242424242',
+      cardExpirationMonth: '12',
+      cardExpirationYear: '24',
+      cardCvc: '123',
+    };
+
+    const result = await useCase.execute(input);
+
+    expect(result).toEqual(mockTransaction);
+    expect(productRepositoryMock.findById).toHaveBeenCalledWith('1');
+    expect(productRepositoryMock.updateStock).toHaveBeenCalledWith('1', 8);
+    expect(wompiPortMock.createTransaction).toHaveBeenCalledWith(expect.objectContaining({
+      amount_in_cents: 20000,
+      currency: 'COP',
+      payment_method: 'CARD',
+      card: {
+        number: '4242424242424242',
+        expiration_month: '12',
+        expiration_year: '24',
+        cvc: '123',
+      },
+      email: 'johndoe@example.com',
+      name: 'John Doe',
+    }));
+    expect(transactionRepositoryMock.createTransaction).toHaveBeenCalledWith(expect.objectContaining({
+      wompi_transaction_id: 'generated-wompi-id',
     }));
   });
 
