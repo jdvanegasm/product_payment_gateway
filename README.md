@@ -151,6 +151,11 @@ This issue prevented the completion of the integration with the Wompi API and ha
 1. The **merchant** configuration in the sandbox environment was not set up correctly, which prevented any transactions from being processed.
 2. The **sandbox mode** was not activated in the Wompi platform, leading to conflicts between the credentials and the test environment.
 
+![Imagen 1](docs/assets/error/err1.png)
+![Imagen 1](docs/assets/error/err2.png)
+![Imagen 1](docs/assets/error/err3.png)
+![Imagen 1](docs/assets/error/err4.png)
+
 ---
 
 ## Project Images
