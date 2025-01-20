@@ -14,7 +14,7 @@ model Product {
   price       Float
   stock       Int
   image_url   String
-  transactions Transaction[] // One-to-Many relationship with transactions
+  transactions Transaction[]
 }
 
 model Transaction {
@@ -22,6 +22,7 @@ model Transaction {
   product_id           String
   customer_name        String
   customer_email       String
+  delivery_address     String
   quantity             Int
   total                Float
   taxes                Float
@@ -49,6 +50,7 @@ enum CardType {
 }
 
 enum PaymentStatus {
+  PENDING
   APPROVED
   REJECTED
 }

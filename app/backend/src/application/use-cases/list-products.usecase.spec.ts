@@ -1,7 +1,7 @@
-
 import { Test } from '@nestjs/testing';
 import { ListProductsUseCase } from './list-products.usecase';
 import { ProductRepository } from 'src/domain/repositories/product-repository.interface';
+import { PRODUCT_REPOSITORY } from '../../domain/repositories/product-repository.token';
 
 describe('ListProductsUseCase', () => {
   let useCase: ListProductsUseCase;
@@ -11,13 +11,14 @@ describe('ListProductsUseCase', () => {
     repositoryMock = {
       findAll: jest.fn(),
       findById: jest.fn(),
+      updateStock: jest.fn(),
     };
 
     const moduleRef = await Test.createTestingModule({
       providers: [
         ListProductsUseCase,
         {
-          provide: 'PRODUCT_REPOSITORY',
+          provide: PRODUCT_REPOSITORY,
           useValue: repositoryMock,
         },
       ],

@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Product } from '../../domain/entities/product.entity';
 import { ProductRepository } from '../../domain/repositories/product-repository.interface';
+import { Product } from '@prisma/client';
 
 @Injectable()
 export class PrismaProductRepository implements ProductRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(): Promise<Product[]> {
-    return this.prisma.product.findMany();
+  async findById(productId: string): Promise<Product | null> {
+    return this.prisma.product.findUnique({ where: { product_id: productId } });
   }
 
-  async findById(id: string): Promise<Product | null> {
-    return this.prisma.product.findUnique({
-      where: { product_id: id },
+  async updateStock(productId: string, newStock: number): Promise<Product> {
+    return this.prisma.product.update({
+      where: { product_id: productId },
+      data: { stock: newStock },
     });
+  }
+
+  async findAll(): Promise<Product[]> {
+    return this.prisma.product.findMany();
   }
 }

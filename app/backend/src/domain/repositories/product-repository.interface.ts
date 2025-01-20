@@ -1,6 +1,7 @@
-import { Product } from '../entities/product.entity';
+import { Product } from '@prisma/client';
 
 export interface ProductRepository {
+  findById(productId: string): Promise<Product | null>;
+  updateStock(productId: string, newStock: number): Promise<Product>;
   findAll(): Promise<Product[]>;
-  findById(id: string): Promise<Product | null>;
 }
