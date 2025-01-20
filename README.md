@@ -155,7 +155,25 @@ This issue prevented the completion of the integration with the Wompi API and ha
 
 ## Project Images
 
-The following images will be attached to demonstrate the project’s UI, code structure, and the current state of the application.
+The following images will be attached to demonstrate the project’s UI and the current state of the application.
+
+![Imagen 1](docs/assets/pic01.png)
+![Imagen 2](docs/assets/pic02.png)
+![Imagen 3](docs/assets/pic03.png)
+![Imagen 4](docs/assets/pic04.png)
+![Imagen 5](docs/assets/pic05.png)
+![Imagen 6](docs/assets/pic06.png)
+![Imagen 7](docs/assets/pic07.png)
+![Imagen 8](docs/assets/pic08.png)
+![Imagen 9](docs/assets/pic09.png)
+![Imagen 10](docs/assets/pic10.png)
+![Imagen 11](docs/assets/pic11.png)
+![Imagen 12](docs/assets/pic12.png)
+![Imagen 13](docs/assets/pic13.png)
+![Imagen 14](docs/assets/pic14.png)
+![Imagen 15](docs/assets/pic15.png)
+![Imagen 16](docs/assets/pic16.png)
+
 
 ---
 
